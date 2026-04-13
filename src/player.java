@@ -1,8 +1,8 @@
-public class player {
+public class Player {
     int ranking;
     String name;
 
-    public player(String name , int ranking){
+    public Player(String name , int ranking){
         this.name = name;
         this.ranking = ranking;
     }

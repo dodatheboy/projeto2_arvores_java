@@ -1,10 +1,10 @@
 class Node<T> {
-    T input;
+    T Player;
     Node<T> esquerda;
     Node<T> direita;
 
-    public Node(T input) {
-        this.input = input;
+    public Node(T Player) {
+        this.Player = Player;
         this.esquerda = null;
         this.direita = null;
     }
