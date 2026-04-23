@@ -1,115 +1,117 @@
+// Classe que implementa a Árvore Binária de Busca (ABB)
 public class ArvoreBinariaBolada {
+    private Node root; // Raiz da árvore
 
-    private Node root;
-
+    // Construtor
     public ArvoreBinariaBolada() {
         this.root = null;
     }
 
-    // Insere um jogador na árvore (chamada pública)
-    public void inserir(Player Player) {
-        root = inserir(root, Player);
+    // Método público para inserir um jogador
+    public void inserir(Player jogador) {
+        root = inserir(root, jogador);
     }
 
-    // Insere um jogador na árvore (recursivo)
-    private Node inserir(Node current, Player Player) {
+    // Método privado recursivo para inserir um jogador
+    private Node inserir(Node current, Player jogador) {
         if (current == null) {
-            return new Node(Player);
+            return new Node(jogador);
         }
 
-        if (Player.getRanking() < current.Player.getRanking()) {
-            current.esquerda = inserir(current.esquerda, Player);
+        if (jogador.getRanking() < current.getPlayer().getRanking()) {
+            current.setEsquerda(inserir(current.getEsquerda(), jogador));
         }
-        else if (Player.getRanking() > current.Player.getRanking()) {
-            current.direita = inserir(current.direita, Player);
+        else if (jogador.getRanking() > current.getPlayer().getRanking()) {
+            current.setDireita(inserir(current.getDireita(), jogador));
         }
 
         return current;
     }
 
-    // Busca um jogador pelo nome (chamada pública)
+    // Método público para buscar um jogador pelo nickname
     public boolean busca(String nome) {
         return busca(root, nome) != null;
     }
 
-    // Busca um jogador pelo nome (recursivo)
+    // Método privado recursivo para buscar um jogador pelo nickname
     private Node busca(Node current, String nome) {
         if (current == null) {
             return null;
         }
 
-        if (current.Player.getName().equals(nome)) {
+        if (current.getPlayer().getName().equals(nome)) {
             return current;
         }
 
-        // Busca recursivamente nos filhos esquerdo e direito
-        Node esquerdaResult = busca(current.esquerda, nome);
-        if (esquerdaResult != null) {
-            return esquerdaResult;
+        Node esquerda = busca(current.getEsquerda(), nome);
+        if (esquerda != null) {
+            return esquerda;
         }
 
-        return busca(current.direita, nome);
+        return busca(current.getDireita(), nome);
     }
 
-    // remover um jogador pelo nome (chamada pública)
+    // Método público para remover um jogador pelo nickname
     public Player remover(String nome) {
-        Node nodeToremover = busca(root, nome);
-        if (nodeToremover == null) {
+        Node nodeToRemove = busca(root, nome);
+        if (nodeToRemove == null) {
             return null; // Jogador não encontrado
         }
-        Player removerdPlayer = nodeToremover.Player;
         root = remover(root, nome);
-        return removerdPlayer;
+        return nodeToRemove.getPlayer();
     }
 
-    // remover um jogador pelo nome (recursivo)
+    // Método privado recursivo para remover um jogador pelo nickname
     private Node remover(Node current, String nome) {
         if (current == null) {
             return null;
         }
 
-        if (nome.compareTo(current.Player.getName()) < 0) {
-            current.esquerda = remover(current.esquerda, nome);
-        } else if (nome.compareTo(current.Player.getName()) > 0) {
-            current.direita = remover(current.direita, nome);
-        } else {
+        if (current.getPlayer().getName().equals(nome)) {
             // Caso 1: Nó sem filhos
-            if (current.esquerda == null && current.direita == null) {
+            if (current.getEsquerda() == null && current.getDireita() == null) {
                 return null;
             }
             // Caso 2: Nó com um filho
-            if (current.esquerda == null) {
-                return current.direita;
-            } else if (current.direita == null) {
-                return current.esquerda;
+            if (current.getEsquerda() == null) {
+                return current.getDireita();
+            }
+            if (current.getDireita() == null) {
+                return current.getEsquerda();
             }
             // Caso 3: Nó com dois filhos
-            Node menordireita = procurarmenor(current.direita);
-            current.Player = menordireita.Player;
-            current.direita = remover(current.direita, menordireita.Player.getName());
+            Player menorJogador = encontrarMenor(current.getDireita());
+            current.setPlayer(menorJogador);
+            current.setDireita(remover(current.getDireita(), menorJogador.getName()));
+        }
+        else {
+            current.setEsquerda(remover(current.getEsquerda(), nome));
+            current.setDireita(remover(current.getDireita(), nome));
         }
 
         return current;
     }
 
-    // Encontra o nó com o menor ranking (para remoção)
-    private Node procurarmenor(Node node) {
-        if (node.esquerda == null) {
-            return node;
-        }
-        return procurarmenor(node.esquerda);
+    // Método para encontrar o menor jogador em uma subárvore
+    private Player encontrarMenor(Node node) {
+        return node.getEsquerda() == null ? node.getPlayer() : encontrarMenor(node.getEsquerda());
     }
 
-    // Percurso em ordem (opcional)
-    public void inOrder() {
-        inOrder(root);
+    // Método para percorrer a árvore em ordem (opcional)
+    public void emOrdem() {
+        emOrdem(root);
     }
 
-    private void inOrder(Node node) {
+    private void emOrdem(Node node) {
         if (node != null) {
-            inOrder(node.esquerda);
-            System.out.println("nome: " + node.Player.getName() + ", Ranking: " + node.Player.getRanking());
-            inOrder(node.direita);
+            emOrdem(node.getEsquerda());
+            System.out.println(node.getPlayer());
+            emOrdem(node.getDireita());
         }
+    }
+
+    // Getter para a raiz
+    public Node getRoot() {
+        return root;
     }
 }
