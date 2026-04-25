@@ -1,116 +1,101 @@
-// Classe que implementa a Árvore Binária de Busca (ABB)
 public class ArvoreBinariaBolada {
-    private Node root; // Raiz da árvore
+    private Node root;
 
-    // Construtor
     public ArvoreBinariaBolada() {
         this.root = null;
     }
 
-    // Método público para inserir um jogador
-    public void inserir(Player jogador) {
-        root = inserir(root, jogador);
+    public void inserir(Player player) {
+        root = inserir(root, player);
     }
 
-    // Método privado recursivo para inserir um jogador
-    private Node inserir(Node current, Player jogador) {
+    private Node inserir(Node current, Player player) {
         if (current == null) {
-            return new Node(jogador);
+            return new Node(player);
         }
 
-        if (jogador.getRanking() < current.getPlayer().getRanking()) {
-            current.setEsquerda(inserir(current.getEsquerda(), jogador));
-        }
-        else if (jogador.getRanking() > current.getPlayer().getRanking()) {
-            current.setDireita(inserir(current.getDireita(), jogador));
+        if (player.getRanking() < current.player.getRanking()) {
+            current.esquerda = inserir(current.esquerda, player);
+        } else if (player.getRanking() > current.player.getRanking()) {
+            current.direita = inserir(current.direita, player);
         }
 
         return current;
     }
 
-    // Método público para buscar um jogador pelo nickname
-    public boolean busca(String nome) {
-        return busca(root, nome) != null;
+    public boolean busca(String name) {
+        return busca(root, name) != null;
     }
 
-    // Método privado recursivo para buscar um jogador pelo nickname
-    private Node busca(Node current, String nome) {
+    private Node busca(Node current, String name) {
         if (current == null) {
             return null;
         }
 
-        if (current.getPlayer().getName().equals(nome)) {
+        if (current.player.getName().equals(name)) {
             return current;
         }
 
-        Node esquerda = busca(current.getEsquerda(), nome);
-        if (esquerda != null) {
-            return esquerda;
+        Node esquerdaResult = busca(current.esquerda, name);
+        if (esquerdaResult != null) {
+            return esquerdaResult;
         }
 
-        return busca(current.getDireita(), nome);
+        return busca(current.direita, name);
     }
 
-    // Método público para remover um jogador pelo nickname
-    public Player remover(String nome) {
-        Node nodeToRemove = busca(root, nome);
+    public Player remove(String name) {
+        Node nodeToRemove = busca(root, name);
         if (nodeToRemove == null) {
-            return null; // Jogador não encontrado
+            return null;
         }
-        root = remover(root, nome);
-        return nodeToRemove.getPlayer();
+        root = remove(root, name);
+        return nodeToRemove.player;
     }
 
-    // Método privado recursivo para remover um jogador pelo nickname
-    private Node remover(Node current, String nome) {
+    private Node remove(Node current, String name) {
         if (current == null) {
             return null;
         }
 
-        if (current.getPlayer().getName().equals(nome)) {
-            // Caso 1: Nó sem filhos
-            if (current.getEsquerda() == null && current.getDireita() == null) {
+        if (current.player.getName().equals(name)) {
+            if (current.esquerda == null && current.direita == null) {
                 return null;
             }
-            // Caso 2: Nó com um filho
-            if (current.getEsquerda() == null) {
-                return current.getDireita();
+            if (current.direita == null) {
+                return current.esquerda;
             }
-            if (current.getDireita() == null) {
-                return current.getEsquerda();
+            if (current.esquerda == null) {
+                return current.direita;
             }
-            // Caso 3: Nó com dois filhos
-            Player menorJogador = encontrarMenor(current.getDireita());
-            current.setPlayer(menorJogador);
-            current.setDireita(remover(current.getDireita(), menorJogador.getName()));
-        }
-        else {
-            current.setEsquerda(remover(current.getEsquerda(), nome));
-            current.setDireita(remover(current.getDireita(), nome));
+
+            Player smallestPlayer = findSmallest(current.direita);
+            current.player = smallestPlayer;
+            current.direita = remove(current.direita, smallestPlayer.getName());
+            return current;
         }
 
+        current.esquerda = remove(current.esquerda, name);
+        current.direita = remove(current.direita, name);
         return current;
     }
 
-    // Método para encontrar o menor jogador em uma subárvore
-    private Player encontrarMenor(Node node) {
-        return node.getEsquerda() == null ? node.getPlayer() : encontrarMenor(node.getEsquerda());
+    private Player findSmallest(Node root) {
+        return root.esquerda == null ? root.player : findSmallest(root.esquerda);
     }
 
-    // Método para percorrer a árvore em ordem (opcional)
-    public void emOrdem() {
-        emOrdem(root);
+    public void inOrder() {
+        inOrder(root);
     }
 
-    private void emOrdem(Node node) {
+    private void inOrder(Node node) {
         if (node != null) {
-            emOrdem(node.getEsquerda());
-            System.out.println(node.getPlayer());
-            emOrdem(node.getDireita());
+            inOrder(node.esquerda);
+            System.out.println(node.player.getName() + " - " + node.player.getRanking());
+            inOrder(node.direita);
         }
     }
 
-    // Getter para a raiz
     public Node getRoot() {
         return root;
     }

@@ -1,13 +1,12 @@
 public class Player {
-    int ranking;
-    String name;
+    private int ranking;
+    private String name;
 
     public Player(String name , int ranking){
         this.name = name;
         this.ranking = ranking;
     }
 
-    // Getters e Setters
     public String getName() {
 
         return name;

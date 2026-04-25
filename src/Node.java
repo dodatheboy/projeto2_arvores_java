@@ -1,15 +1,15 @@
-class Node<T> {
-    private Player player;
-    Node<T> esquerda;
-    Node<T> direita;
+class Node {
+    public Player player;
+    public Node esquerda;
+    public Node direita;
 
     public Node(Player player) {
         this.player = player;
         this.esquerda = null;
         this.direita = null;
     }
-    // Getters e Setters
     public Player getPlayer() {
+
         return player;
     }
 
